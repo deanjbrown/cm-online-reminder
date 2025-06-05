@@ -1,0 +1,1 @@
+ALTER TABLE `apiUser` DROP COLUMN `apiUserTempPassword`;
