@@ -1,4 +1,9 @@
 import { eq } from "drizzle-orm";
+import { app } from "electron";
+import * as fs from "fs";
+import { unparse } from "papaparse";
+import * as path from "path";
+
 import { db } from "../../db";
 import { apiUser } from "../../db/schema";
 import {
@@ -17,7 +22,11 @@ import { apiLogin } from "../api/auth";
  */
 export async function fetchAPIUsersService(): Promise<APIUserZodSchema[]> {
   try {
-    const apiUsers: APIUserZodSchema[] = db.select().from(apiUser).all();
+    const apiUsers: APIUserZodSchema[] = db
+      .select()
+      .from(apiUser)
+      .orderBy(apiUser.apiUserCustomerName)
+      .all();
     return apiUsers;
   } catch (error) {
     throw new Error(`Unable to fetch apiUsers`);
@@ -171,5 +180,46 @@ export async function authenticateAPIUserService(
     return apiUserDetails;
   } catch (error) {
     throw new Error(`Error  authenticating the api user:${error}`);
+  }
+}
+
+/**
+ * exportAPIUsersService
+ * @param apiUsers List of APIUserZodSchema objects to export
+ * @returns true if the export was successful, false otherwise
+ */
+export async function exportAPIUsersService(apiUsers: APIUserZodSchema[]): Promise<boolean> {
+  const includedFields = [
+    "id",
+    "apiUserCustomerName",
+    "apiUserUsername",
+    "apiUserPassword",
+    "orgId",
+    "apiKey",
+  ];
+
+  try {
+    // Exlude the accessToken and accessTokenCreatedAt fields
+    const filteredData = apiUsers.map((user) => {
+      const filtered: Record<string, any> = {};
+      for (const field of includedFields) {
+        filtered[field] = user[field];
+      }
+      return filtered;
+    });
+
+    // Generate CSV data
+    const csvData = unparse(filteredData);
+
+    // Write the CSV data to a file
+    const currentDateTime = new Date().toISOString().replace(/[:.]/g, "-");
+    const outputPath = path.join(
+      app.getPath("downloads"),
+      `cm-reminder-export-${currentDateTime}.csv`
+    );
+    fs.writeFileSync(outputPath, csvData, "utf8");
+    return true;
+  } catch (error) {
+    return false;
   }
 }

@@ -74,7 +74,7 @@ const APIUsersList: React.FC<APIUsersListProps> = (props) => {
                     navigate("/import_multiple_api_users");
                   }}
                 >
-                  Import Multiple API Users
+                  Import / Export API Users
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>

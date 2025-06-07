@@ -4,6 +4,7 @@ import { CreateVehicleZodSchema } from "../shared/schemas/vehicle";
 import {
   createExistingAPIUserController,
   deleteAPIUserController,
+  exportAPIUsersController,
   fetchAPIUsersController
 } from "./controllers/apiUserControllers";
 import {
@@ -43,7 +44,9 @@ export function initializeIPCHandlers(): void {
   ipcMain.on("fetchReminders", (event: IpcMainEvent) => fetchRemindersController(event));
 
   // IPC handle fetch reminder with API Users
-  ipcMain.on("fetchRemindersWithAPIUsers", (event: IpcMainEvent) => fetchRemindersWithAPIUserController(event));
+  ipcMain.on("fetchRemindersWithAPIUsers", (event: IpcMainEvent) =>
+    fetchRemindersWithAPIUserController(event)
+  );
 
   // IPC handle delete reminder
   ipcMain.on("deleteReminder", (event: IpcMainEvent, id: string) =>
@@ -54,4 +57,7 @@ export function initializeIPCHandlers(): void {
   ipcMain.on("fetchAPIUsersVehicles", async (event: IpcMainEvent, apiUserId: number) =>
     fetchAPIUsersVehiclesController(event, apiUserId)
   );
+
+  // IPC handle export API Users
+  ipcMain.on("exportAPIUsers", async (event: IpcMainEvent) => exportAPIUsersController(event));
 }

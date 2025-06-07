@@ -1,8 +1,9 @@
 import { IpcMainEvent } from "electron";
-import {  CreateAPIUserZodSchema } from "../../shared/schemas";
+import { CreateAPIUserZodSchema } from "../../shared/schemas";
 import {
   createExistingAPIUserService,
   deleteAPIUserService,
+  exportAPIUsersService,
   fetchAPIUsersService
 } from "../services/apiUserServices";
 
@@ -54,5 +55,25 @@ export async function deleteAPIUserController(event: IpcMainEvent, id: number): 
     event.reply("deleteAPIUserReply", { success: true, results: id });
   } catch (error) {
     event.reply("deleteAPIUserReply", { success: false, results: error });
+  }
+}
+
+/**
+ * exportAPIUsersController
+ * 
+ * Export all API users to a file
+ */
+export async function exportAPIUsersController(event: IpcMainEvent): Promise<void> {
+  try {
+    const apiUsers = await fetchAPIUsersService();
+    const isExportSuccessful = await exportAPIUsersService(apiUsers);
+    if( isExportSuccessful) {
+      event.reply("exportAPIUsersReply", { success: true });
+    }
+    else {
+      throw new Error("Failed to export API Users.");
+    }
+  } catch (error) {
+    event.reply("exportAPIUsersReply", { success: false, error: error });
   }
 }
