@@ -140,7 +140,7 @@ const checkVehiclePresences = async (groupedReminders: GroupedReminders): Promis
       if (apiVehicle) {
         if (apiVehicle.vehicle.presence !== vehicle.presence) {
           new Notification({
-            title: "Device Presence Change Detected!",
+            title: `${apiUser.apiUserCustomerName} - Vehicle presence changed!`,
             body: `${apiVehicle.vehicle.name} is now ${apiVehicle.vehicle.presence}`
           }).show();
         }

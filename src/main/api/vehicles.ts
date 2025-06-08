@@ -30,6 +30,16 @@ export async function apiFetchVehicleData(
       apiClient.get(`/org/${orgId}/vehicles/presence`, { headers: requestHeaders })
     ]);
 
+    // The API returns a status 200 even if there is an error in the response body.
+    // We need to check the response data for an error message and throw an error if it exists.
+    if (vehicleResponse.data.errorMessage) {
+      throw new Error(vehicleResponse.data.errorMessage);
+    }
+
+    if (presenceResponse.data.errorMessage) {
+      throw new Error(vehicleResponse.data.errorMessage);
+    }
+
     const vehicles: VehicleZodSchema[] = vehicleResponse.data.Vehicles;
     const presences: VehiclePresenceZodSchema[] = presenceResponse.data.Presences;
     const vehiclesWithPresences = mergeVehicleListWithPresence(vehicles, presences);

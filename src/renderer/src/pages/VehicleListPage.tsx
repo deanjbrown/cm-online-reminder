@@ -38,8 +38,10 @@ const VehicleListPage: React.FC = () => {
         toast({
           title: "Error retrieving vehicle data from API",
           variant: "destructive",
-          description: response.error
+          description: response.error.toString()
         });
+        // Redirect back to the previous page if the API user details are not found
+        navigate(-1);
       }
       setIsLoading(false);
     };

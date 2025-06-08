@@ -57,7 +57,6 @@ export async function fetchRemindersWithAPIUserController(event: IpcMainEvent): 
     const remindersWithAPIUsers = await fetchRemindersWithAPIUserService();
     event.reply("fetchRemindersReply", { success: true, results: remindersWithAPIUsers });
   } catch (error) {
-    console.error(`[-] vehicleControllers - Error fetching reminders with API User: ${error}`);
     event.reply("fetchRemindersReply", { success: false, results: error });
   }
 }
