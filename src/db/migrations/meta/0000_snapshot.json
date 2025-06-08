@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "4f606b9c-a9bf-45cc-afb9-5c0fde00f01f",
+  "id": "a7b8fbad-e2cc-42c5-8ad1-cda094db6e4b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "apiUser": {
@@ -23,13 +23,6 @@
         },
         "apiUserUsername": {
           "name": "apiUserUsername",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "apiUserTempPassword": {
-          "name": "apiUserTempPassword",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -193,10 +186,31 @@
           "notNull": true,
           "autoincrement": false,
           "default": "CURRENT_TIMESTAMP"
+        },
+        "apiUserId": {
+          "name": "apiUserId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "vehicle_apiUserId_apiUser_id_fk": {
+          "name": "vehicle_apiUserId_apiUser_id_fk",
+          "tableFrom": "vehicle",
+          "tableTo": "apiUser",
+          "columnsFrom": [
+            "apiUserId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}

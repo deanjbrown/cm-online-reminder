@@ -4,7 +4,8 @@ import {
   createExistingAPIUserService,
   deleteAPIUserService,
   exportAPIUsersService,
-  fetchAPIUsersService
+  fetchAPIUsersService,
+  importAPIUsersService
 } from "../services/apiUserServices";
 
 /**
@@ -60,20 +61,39 @@ export async function deleteAPIUserController(event: IpcMainEvent, id: number): 
 
 /**
  * exportAPIUsersController
- * 
+ *
  * Export all API users to a file
  */
 export async function exportAPIUsersController(event: IpcMainEvent): Promise<void> {
   try {
     const apiUsers = await fetchAPIUsersService();
     const isExportSuccessful = await exportAPIUsersService(apiUsers);
-    if( isExportSuccessful) {
+    if (isExportSuccessful) {
       event.reply("exportAPIUsersReply", { success: true });
-    }
-    else {
+    } else {
       throw new Error("Failed to export API Users.");
     }
   } catch (error) {
     event.reply("exportAPIUsersReply", { success: false, error: error });
+  }
+}
+
+/**
+ * importAPIUsersController
+ *
+ * Imports API users from a file into the database.
+ */
+export async function importAPIUsersController(event: IpcMainEvent): Promise<void> {
+  try {
+    // Even if the service completes successfully, we may still have an error that should be displayed to the user
+    const importResponse: { importSuccess: boolean; error?: string } =
+      await importAPIUsersService();
+
+    event.reply("importAPIUsersReply", {
+      success: importResponse.importSuccess,
+      results: importResponse.error
+    });
+  } catch (error) {
+    event.reply("importAPIUsersReply", { success: false, error: error });
   }
 }

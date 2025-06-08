@@ -9,6 +9,7 @@ import { Toaster } from "../components/ui/toaster";
 
 function ImportMultipleAPIUsersPage(): JSX.Element {
   const [isExportLoading, setIsExportLoading] = useState<boolean>(false);
+  const [isImportLoading, setIsImportLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -48,6 +49,41 @@ function ImportMultipleAPIUsersPage(): JSX.Element {
     };
   }, []);
 
+  // Send IPC request to the main process to import API users
+  const handleImport = async (): Promise<void> => {
+    setIsImportLoading(true);
+    window.electron.ipcRenderer.send("importAPIUsers");
+  };
+
+  useEffect(() => {
+    const handleImportAPIUsersReply = (event: IpcRendererEvent, response): void => {
+      setIsImportLoading(false);
+      if (response.success) {
+        toast({
+          title: "Import Successful",
+          description: "API Users have been imported successfully."
+        });
+      } else {
+        toast({
+          title: "Import Failed",
+          description: `Failed to import API Users: ${response.results}`,
+          variant: "destructive"
+        });
+      }
+    };
+
+    // Add the listener on mount
+    const handleImportReplyListener = window.electron.ipcRenderer.on(
+      "importAPIUsersReply",
+      handleImportAPIUsersReply
+    );
+
+    // Remove the listener on unmount
+    return (): void => {
+      handleImportReplyListener();
+    };
+  }, []);
+
   return (
     <>
       <div className="p-6">
@@ -56,7 +92,7 @@ function ImportMultipleAPIUsersPage(): JSX.Element {
         </Button>
         <div className="p-6 mt-3 max-w-xl mx-auto rounded-xl shadow-2xl flex flex-col gap-y-3 bg-card/50 backdrop-blur-xl">
           <h1 className="text-2xl font-medium text-white">Import / Export API Users</h1>
-          <div className="flex flex-row ">
+          <div className="flex flex-row gap-6">
             <Button disabled={isExportLoading} onClick={handleExport}>
               {isExportLoading ? (
                 <span className="flex items-center gap-2">
@@ -65,6 +101,16 @@ function ImportMultipleAPIUsersPage(): JSX.Element {
                 </span>
               ) : (
                 "Export API Users"
+              )}
+            </Button>
+            <Button disabled={isImportLoading} onClick={handleImport}>
+              {isImportLoading ? (
+                <span className="flex items-center gap-2">
+                  <FaSpinner className="animate-spin" />
+                  Importing . . .
+                </span>
+              ) : (
+                "Import API Users"
               )}
             </Button>
           </div>

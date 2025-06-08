@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
-import { app } from "electron";
+import { app, dialog } from "electron";
 import * as fs from "fs";
-import { unparse } from "papaparse";
+import { unparse, parse } from "papaparse";
 import * as path from "path";
 
 import { db } from "../../db";
@@ -120,7 +120,7 @@ export async function deleteAPIUserService(id: number): Promise<void> {
   try {
     await db.delete(apiUser).where(eq(apiUser.id, id));
   } catch (error) {
-    throw new Error(`Unable to delete apiUser with id: ${id}`);
+    throw new Error(`Unable to delete apiUser with id: ${id} - ${error}`);
   }
 }
 
@@ -190,12 +190,11 @@ export async function authenticateAPIUserService(
  */
 export async function exportAPIUsersService(apiUsers: APIUserZodSchema[]): Promise<boolean> {
   const includedFields = [
-    "id",
     "apiUserCustomerName",
     "apiUserUsername",
     "apiUserPassword",
     "orgId",
-    "apiKey",
+    "apiKey"
   ];
 
   try {
@@ -221,5 +220,84 @@ export async function exportAPIUsersService(apiUsers: APIUserZodSchema[]): Promi
     return true;
   } catch (error) {
     return false;
+  }
+}
+
+/**
+ * importAPIUsersService
+ *
+ * @returns A promise that resolves to an object containing the import success status and an optional error message.
+ *
+ * Opens a dialog to select a CSV file, reads the file, parses the CSV data, validates it against the CreateAPIUserZodSchema,
+ * and imports valid API Users into the database. If there are any errors during parsing or validation, it returns an error message.
+ */
+export async function importAPIUsersService(): Promise<{ importSuccess: boolean; error?: string }> {
+  try {
+    // Open a dialog to select the CSV file
+    const result = await dialog.showOpenDialog({
+      properties: ["openFile"],
+      filters: [
+        { name: "CSV Files", extensions: ["*.csv"] },
+        { name: "All Files", extensions: ["*"] }
+      ]
+    });
+
+    // Check if the user canceled the dialog or selected no files
+    if (result.canceled || result.filePaths.length === 0) {
+      throw new Error("No file selected for import.");
+    }
+
+    // Retrieve the file path
+    const filePath = result.filePaths[0];
+
+    // Read in the CSV data
+    const csvData = fs.readFileSync(filePath, "utf8");
+
+    // Parse the CSV data
+    const { data, errors } = parse<Record<string, string>>(csvData, {
+      header: true,
+      skipEmptyLines: true
+    });
+
+    if (errors.length > 0) {
+      console.warn("Errors while parsing CSV:", errors);
+    }
+
+    // Validate the data
+    const validData: CreateAPIUserZodSchema[] = [];
+    const failedRows: { index: number; error: string }[] = [];
+
+    data.forEach((row, idx) => {
+      const parsed = createAPIUserSchema.safeParse(row);
+      if (parsed.success) {
+        validData.push(parsed.data);
+      } else {
+        failedRows.push({ index: idx + 1, error: parsed.error.message });
+      }
+    });
+
+    let errorMessage = "The following users could not be importd:";
+    let hasErrors = false;
+
+    if (failedRows.length > 0) {
+      console.warn(`[!] ${failedRows.length} invalid users found:`);
+      hasErrors = true;
+      failedRows.forEach((row) => {
+        console.warn(`User: ${row.index} - Error: ${row.error}`);
+        errorMessage += `\nUser: ${JSON.stringify(row)} - Error: ${row.error}`;
+      });
+    }
+
+    // Save the valid API Users to the database
+    await db.insert(apiUser).values(validData);
+
+    // If the import was successful, but there were errors, return the error message to the frontend
+    if (hasErrors) {
+      return { importSuccess: false, error: errorMessage };
+    } else {
+      return { importSuccess: true };
+    }
+  } catch (error) {
+    throw new Error(`Error importing API Users: ${error}`);
   }
 }

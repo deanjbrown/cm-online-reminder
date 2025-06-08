@@ -5,7 +5,8 @@ import {
   createExistingAPIUserController,
   deleteAPIUserController,
   exportAPIUsersController,
-  fetchAPIUsersController
+  fetchAPIUsersController,
+  importAPIUsersController
 } from "./controllers/apiUserControllers";
 import {
   createReminderController,
@@ -60,4 +61,7 @@ export function initializeIPCHandlers(): void {
 
   // IPC handle export API Users
   ipcMain.on("exportAPIUsers", async (event: IpcMainEvent) => exportAPIUsersController(event));
+
+  // IPC handle import API Users
+  ipcMain.on("importAPIUsers", async (event: IpcMainEvent) => importAPIUsersController(event));
 }

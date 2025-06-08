@@ -1,1 +1,0 @@
-ALTER TABLE `vehicle` ADD `apiUserId` integer NOT NULL REFERENCES apiUser(id);

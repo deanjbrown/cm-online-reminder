@@ -9,6 +9,9 @@ const dbPath = path.join(app.getPath("userData"), "database.sqlite");
 // Initialize the SQLite database
 const sqlite = new Database(dbPath);
 
+// Enable foreign key support
+sqlite.pragma("foreign_keys = ON");
+
 // Initialize the Drizzle ORM
 export const db = drizzle(sqlite);
 

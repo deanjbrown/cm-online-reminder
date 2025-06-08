@@ -2,7 +2,6 @@ CREATE TABLE `apiUser` (
 	`id` integer PRIMARY KEY NOT NULL,
 	`apiUserCustomerName` text NOT NULL,
 	`apiUserUsername` text NOT NULL,
-	`apiUserTempPassword` text NOT NULL,
 	`apiUserPassword` text NOT NULL,
 	`orgId` text NOT NULL,
 	`apiKey` text NOT NULL,
@@ -26,5 +25,7 @@ CREATE TABLE `vehicle` (
 	`node` text NOT NULL,
 	`nodeName` text NOT NULL,
 	`presence` text,
-	`createdAt` text DEFAULT CURRENT_TIMESTAMP NOT NULL
+	`createdAt` text DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	`apiUserId` integer NOT NULL,
+	FOREIGN KEY (`apiUserId`) REFERENCES `apiUser`(`id`) ON UPDATE cascade ON DELETE cascade
 );
