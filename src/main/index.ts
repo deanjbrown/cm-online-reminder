@@ -1,4 +1,5 @@
-import { app, shell, BrowserWindow, Notification } from "electron";
+import { app, shell, BrowserWindow, Notification, nativeImage } from "electron";
+import { autoUpdater } from "electron-updater";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
@@ -49,7 +50,16 @@ function createWindow(): void {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // Set app user model id for windows
-  electronApp.setAppUserModelId("com.electron");
+  electronApp.setAppUserModelId("com.cameramatics");
+
+  // Check for updates
+  autoUpdater.checkForUpdatesAndNotify();
+
+  // Set the icon on Mac in dev
+  const icon = nativeImage.createFromPath(
+    join(__dirname, "../../resources/cm-online-reminder.png")
+  );
+  app.dock.setIcon(icon);
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

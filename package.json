@@ -1,11 +1,11 @@
 {
   "name": "cm-online-reminder",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A desktop application that integrates with the CameraMatics API and sends a desktop notification to the end user when a state change is detected",
   "main": "./out/main/index.js",
   "author": "Dean Brown",
   "license": "MIT",
-  "homepage": "https://electron-vite.org",
+  "homepage": "https://github.com/deanjbrown/cm-online-reminder",
   "scripts": {
     "db:generate": "drizzle-kit generate",
     "format": "prettier --write .",
@@ -21,6 +21,29 @@
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:linux": "electron-vite build && electron-builder --linux"
+  },
+  "build": {
+    "appId": "com.cameramatics.cm-online-reminder",
+    "productName": "CameraMatics Online Reminder",
+    "directories": {
+      "buildResources": "resources"
+    },
+    "mac": {
+      "icon": "cm-online-reminder.icns"
+    },
+    "win": {
+      "icon": "cm-online-reminder.ico"
+    },
+    "linux": {
+      "icon": "cm-online-reminder.png"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "deanjbrown",
+        "repo": "cm-online-reminder"
+      }
+    ]
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
