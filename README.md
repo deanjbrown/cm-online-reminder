@@ -7,16 +7,16 @@ This is a desktop application that integrates with the 2.0 CameraMatics platform
 - **Receive desktop notifications when vehicle state changes (Offline / Online / Stopped / Driving / etc)**
 - **Create reminders for multiple vehicles**
 - **Create reminders for multiple organisations in the same application**
+- **Import / Export API Users via .csv file**
 - **Use your existing API User details to interact with the API**
 - **Cross platform (Available for Windows / Mac / Linux)**
 
 ## User Guide
 
-A user guide is currently being written and will be available shortly.
+A user guide is available. Please feel free to message me if you require the guide.
 
 ## Features in Development
 
-- **Import multiple API users using a template**
 - **Group Reminders by Org**
 
 ## Contact
@@ -40,26 +40,26 @@ Make your changes and submit a pull request.
 ### Install
 
 ```bash
-$ yarn
+$ npm install
 ```
 
 ### Run in Development mode
 
 ```bash
-$ yarn dev
+$ npm run dev
 ```
 
 ### Build project
 
 ```bash
 # For windows
-$ yarn build:win
+$ npm build:win
 
 # For macOS
-$ yarn build:mac
+$ npm build:mac
 
 # For Linux
-$ yarn build:linux
+$ npm build:linux
 ```
 
 ## License
