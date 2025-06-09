@@ -53,13 +53,13 @@ $ npm run dev
 
 ```bash
 # For windows
-$ npm build:win
+$ npm run build:win
 
 # For macOS
-$ npm build:mac
+$ npm run build:mac
 
 # For Linux
-$ npm build:linux
+$ npm run build:linux
 ```
 
 ## License
