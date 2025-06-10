@@ -1,5 +1,6 @@
 {
   "name": "cm-online-reminder",
+  "productName": "CameraMatics Online Reminder",
   "version": "0.1.0",
   "description": "A desktop application that integrates with the CameraMatics API and sends a desktop notification to the end user when a state change is detected",
   "main": "./out/main/index.js",
@@ -42,6 +43,12 @@
         "provider": "github",
         "owner": "deanjbrown",
         "repo": "cm-online-reminder"
+      }
+    ],
+    "extraResources": [
+      {
+        "from": "./src/db/migrations",
+        "to": "migrations"
       }
     ]
   },

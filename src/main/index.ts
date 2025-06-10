@@ -56,10 +56,12 @@ app.whenReady().then(() => {
   autoUpdater.checkForUpdatesAndNotify();
 
   // Set the icon on Mac in dev
-  const icon = nativeImage.createFromPath(
-    join(__dirname, "../../resources/cm-online-reminder.png")
-  );
-  app.dock.setIcon(icon);
+  if (process.platform === "darwin") {
+    const icon = nativeImage.createFromPath(
+      join(__dirname, "../../resources/cm-online-reminder.png")
+    );
+    app.dock.setIcon(icon);
+  }
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

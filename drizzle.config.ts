@@ -2,7 +2,7 @@ import { defineConfig } from "drizzle-kit";
 import path from "path";
 import os from "os";
 
-const userDataDirName = "cm-online-reminder";
+const userDataDirName = "CameraMatics Online Reminder";
 const homeDir = os.homedir();
 let databasePath;
 

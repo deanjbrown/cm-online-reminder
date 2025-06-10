@@ -9,6 +9,7 @@ import VehicleList from "../components/vehicles/VehicleList";
 import Loader from "../components/generic/Loader";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "../components/ui/toaster";
+import { getAPIUserId } from "../utils/queryParams";
 
 const VehicleListPage: React.FC = () => {
   const [apiUserDetails, setAPIUserDetails] = useState<APIUserZodSchema>();
@@ -16,8 +17,7 @@ const VehicleListPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Get the API user ID from the URL get params
-  const queryParams = new URLSearchParams(window.location.search);
-  const apiUserId = queryParams.get("id");
+  const apiUserId = getAPIUserId();
 
   const navigate = useNavigate();
   const { toast } = useToast();

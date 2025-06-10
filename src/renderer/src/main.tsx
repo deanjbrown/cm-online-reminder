@@ -3,12 +3,14 @@ import "./assets/main.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { BrowserRouter } from "react-router";
+import { BrowserRouter, HashRouter } from "react-router";
+
+const Router = import.meta.env.VITE_ROUTER_TYPE === "browser" ? BrowserRouter : HashRouter;
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <Router>
       <App />
-    </BrowserRouter>
+    </Router>
   </React.StrictMode>
 );
