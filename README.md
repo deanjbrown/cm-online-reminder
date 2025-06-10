@@ -18,6 +18,9 @@ A user guide is available. Please feel free to message me if you require the gui
 ## Features in Development
 
 - **Group Reminders by Org**
+- **Improved validation and error handling**
+- **Detect duplicates when importing API Users**
+- **Add importing / exporting of reminders**
 
 ## Contact
 
